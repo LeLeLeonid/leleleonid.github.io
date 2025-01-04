@@ -39,10 +39,10 @@ a:hover {
 }
 
 button {
-    background: #002d2d;
+    background-color: #007bff;
     border: 1px solid #cce7e8;
     color: #cce7e8;
-    padding: 8px 16px;
+    padding: 10px 20px;
     font-size: 0.9em;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
@@ -50,8 +50,7 @@ button {
 
 button:hover {
     background: #008080;
-    border-color: #cce7e8;
-    color: #002d2d;
+    border-color: #0056b3;
 }
 
 .container {
@@ -85,4 +84,21 @@ button:hover {
 .neon-text {
     font-size: 1.2em;
     color: #cce7e8;
-    text-shadow: 0 0 5px #008080, 0 0▌
+    text-shadow: 0 0 5px #008080, 0 0;
+}
+#chat-box { 
+    width: 100%;
+    height: 600px;
+    border: 2px solid #ccc;
+    background-color:black;
+    overflow-y: scroll;
+    margin-bottom: 5px;
+} 
+
+input {
+    background-color:black;
+    color:lightgray;
+    margin: 5px;
+    padding: 10px;
+    width: calc(100% - 22px);
+}

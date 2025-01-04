@@ -43,7 +43,21 @@ Web-страницы.</a></li>
     <main>
       <article>
         <section>
-          <h2>Label:</h2>
+          <h2><b>FREE CHAT / СВОБОДНЫЙ ЧАТ (в разработке..)</b></h2>
+		  <a href="htmls/chat.html">Перейти в чат</a>
+		  <h5>Register | Зарегистрируйтесь (Для Чата)</h5>
+		  <input type="text" id="reg-username" placeholder="Enter Nickname">
+		  <input type="password" id="reg-password" placeholder="Enter Password">
+		  <button onclick="register()">Register</button>
+		  <script type="module">
+			import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js"; 
+			import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-analytics.js";
+			const firebaseConfig = { apiKey: "AIzaSyD5ieNSkceyWfImZ7AYFfDwnjcptt44wGI", authDomain: "freechat-125.firebaseapp.com", projectId: "freechat-125", storageBucket: "freechat-125.firebasestorage.app", messagingSenderId: "195672319396", appId: "1:195672319396:web:9f33e3f835ad3eb490cd31", measurementId: "G-FCR767174K" };
+		    const app = initializeApp(firebaseConfig);
+			const analytics = getAnalytics(app);
+		  </script>
+		  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+		  <script src="../scripts/register.js"></script>
           <img align="right" src="res/giphy.webp" class="background" height=500 width=400>
           <p>ABOUT ME</p>
           <p>I am the supreme commander of the Ebalandian Republic. Noteprogressivist, engineer, futurist, majarist, etc.</p>

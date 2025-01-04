@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LE LE CHAT</title>
+    <link rel="stylesheet" type="text/css" href="../styles/style.css">
+</head>
+<body>
+    <h1><b>Free Chat/Свободный Чат</b></h1>
+	<div id="chat-box"></div></script>
+	<input type="color" id="color" value="#009900">
+	<input type="text" id="username" placeholder="Введите ник и выберите цвет вверху :> | Enter Nickname">
+	<input type="password" id="password" placeholder="Введите пароль | Enter Password">
+	<input type="text" id="message" placeholder="Введите сообщение | Enter Message" onkeydown="if(event.key === 'Enter') sendMessage()">
+	<button onclick="sendMessage()">Enter</button>
+	<button onclick="clearChat()">Clear Chat</button>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+	<script src="../scripts/chat.js"></script>
+</body>
+	<li><a href="../index.html">Главная Страница</a></li>
+</html>
