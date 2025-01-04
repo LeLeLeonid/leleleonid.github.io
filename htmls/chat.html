@@ -8,15 +8,34 @@
 </head>
 <body>
     <h1><b>Free Chat/Свободный Чат</b></h1>
-	<div id="chat-box"></div></script>
-	<input type="color" id="color" value="#009900">
-	<input type="text" id="username" placeholder="Введите ник и выберите цвет вверху :> | Enter Nickname">
-	<input type="password" id="password" placeholder="Введите пароль | Enter Password">
-	<input type="text" id="message" placeholder="Введите сообщение | Enter Message" onkeydown="if(event.key === 'Enter') sendMessage()">
-	<button onclick="sendMessage()">Enter</button>
-	<button onclick="clearChat()">Clear Chat</button>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
-	<script src="../scripts/chat.js"></script>
+    <div id="auth-section">
+        <h3>Регистрация:</h3>
+        <input type="text" id="reg-username" placeholder="Введите ник | Enter Nickname">
+        <input type="password" id="reg-password" placeholder="Введите пароль | Enter Password">
+        <button onclick="register()">Зарегистрироваться</button>
+        <h3>Вход:</h3>
+        <input type="text" id="username" placeholder="Введите ник | Enter Nickname">
+        <input type="password" id="password" placeholder="Введите пароль | Enter Password">
+        <button onclick="login()">Войти</button>
+    </div>
+    <div id="user-panel" style="display: none;">
+        <p>Добро пожаловать, <span id="current-user"></span>!</p>
+        <button onclick="logout()">Выйти</button>
+        <input type="color" id="color" value="#009900">
+        <button id="banButton" style="display: none;" onclick="banUserPrompt()">Забанить пользователя</button> <!-- Кнопка скрыта по умолчанию -->
+    </div>
+    <div id="chat-section" style="display: none;">
+        <h3>Чат:</h3>
+        <div id="chat-box"></div>
+        <input type="text" id="message" placeholder="Введите сообщение | Enter Message" 
+               onkeydown="if(event.key === 'Enter') sendMessage()">
+        <button onclick="sendMessage()">Отправить</button>
+		<input type="file" id="imageUpload" accept="image/*">
+		<button onclick="sendImage()">Отправить изображение</button>
+        <button onclick="clearChat()">Очистить чат</button>
+    </div>
+	<li><a href="../index.html">INDEX</a></li>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+    <script src="../scripts/chat.js"></script>
 </body>
-	<li><a href="../index.html">Главная Страница</a></li>
 </html>
