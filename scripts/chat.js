@@ -139,6 +139,8 @@ async function setupRealtimeMessages() {
         .subscribe();
 }
 
+window.login = login;
+
 async function sendMessage() {
     const message = document.getElementById('message').value.trim();
     const currentTime = new Date().getTime();
