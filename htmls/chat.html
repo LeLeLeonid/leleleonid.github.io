@@ -16,7 +16,7 @@
         <h3>Вход:</h3>
         <input type="text" id="username" placeholder="Введите ник | Enter Nickname">
         <input type="password" id="password" placeholder="Введите пароль | Enter Password">
-        <button id="login-btn">Войти</button>
+        <button id="login-btn" onclick="login()">Войти</button>
     </div>
     <div id="user-panel" style="display: none;">
         <p>Добро пожаловать, <span id="current-user"></span>!</p>
@@ -35,7 +35,7 @@
         <button onclick="clearChat()">Очистить чат</button>
     </div>
 	<li><a href="../index.html">INDEX</a></li>
-	<script src="../scripts/chat.js" type="module"></script>
+	<script src="../scripts/chat.js" type="module" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </body>

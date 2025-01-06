@@ -16,6 +16,9 @@ const chatSection = document.getElementById('chat-section');
 const colorInput = document.getElementById('color');
 const banButton = document.getElementById('banButton');
 const imageUploadInput = document.getElementById('imageUpload');
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('login-btn').addEventListener('click', login);
+});
 
 let lastMessageTime = 0;
 let currentUser = null;
@@ -314,9 +317,6 @@ async function banUserPrompt() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('login-btn').addEventListener('click', login);
-});
 document.getElementById('register-btn').addEventListener('click', register);
 document.getElementById('send-btn').addEventListener('click', sendMessage);
 document.getElementById('logout-btn').addEventListener('click', logout);
