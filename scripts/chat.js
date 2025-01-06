@@ -132,8 +132,7 @@ async function login() {
 }
 
 async function setupRealtimeMessages() {
-    supabase
-        .channel('public:message')
+    const channel = supabase.channel('public:message')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'message' }, payload => {
             loadMessages();
         })
