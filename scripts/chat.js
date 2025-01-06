@@ -18,6 +18,12 @@ const banButton = document.getElementById('banButton');
 const imageUploadInput = document.getElementById('imageUpload');
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('login-btn').addEventListener('click', login);
+	document.getElementById('register-btn').addEventListener('click', register);
+	document.getElementById('send-btn').addEventListener('click', sendMessage);
+	document.getElementById('logout-btn').addEventListener('click', logout);
+	document.getElementById('ban-btn').addEventListener('click', banUserPrompt);
+	document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
+	document.getElementById('imageUpload').addEventListener('change', sendImage);
 });
 
 let lastMessageTime = 0;
@@ -95,7 +101,6 @@ async function login() {
 
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
 
-    // Проверяем, не заблокирован ли пользователь
     const { data: bannedData } = await supabase
         .from('banned_users')
         .select('username')
@@ -106,7 +111,6 @@ async function login() {
         return;
     }
 
-    // Ищем пользователя в таблице users
     const { data: userData, error } = await supabase
         .from('users')
         .select('*')
@@ -118,7 +122,6 @@ async function login() {
         return;
     }
 
-    // Устанавливаем текущего пользователя и его UUID
     currentUser = username;
     currentUserId = userData[0].id;
     currentUserDisplay.textContent = username;
@@ -126,7 +129,6 @@ async function login() {
     userPanel.style.display = 'block';
     chatSection.style.display = 'block';
 
-    // Сохраняем данные пользователя в localStorage
     localStorage.setItem('currentUser', currentUser);
     localStorage.setItem('currentUserId', currentUserId);
 
@@ -316,14 +318,6 @@ async function banUserPrompt() {
         await banUser(usernameToBan);
     }
 }
-
-document.getElementById('register-btn').addEventListener('click', register);
-document.getElementById('send-btn').addEventListener('click', sendMessage);
-document.getElementById('logout-btn').addEventListener('click', logout);
-document.getElementById('ban-btn').addEventListener('click', banUserPrompt);
-document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
-document.getElementById('imageUpload').addEventListener('change', sendImage);
-
 
 if (currentUser) {
     loadMessages();
