@@ -17,14 +17,14 @@ const colorInput = document.getElementById('color');
 const banButton = document.getElementById('banButton');
 const imageUploadInput = document.getElementById('imageUpload');
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM полностью загружен');
     document.getElementById('login-btn').addEventListener('click', login);
-	document.getElementById('register-btn').addEventListener('click', register);
-	document.getElementById('send-btn').addEventListener('click', sendMessage);
-	document.getElementById('logout-btn').addEventListener('click', logout);
-	document.getElementById('ban-btn').addEventListener('click', banUserPrompt);
-	document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
-	document.getElementById('imageUpload').addEventListener('change', sendImage);
-	console.log("POSHOL NAHUI");
+    document.getElementById('register-btn').addEventListener('click', register);
+    document.getElementById('logout-btn').addEventListener('click', logout);
+    document.getElementById('send-btn').addEventListener('click', sendMessage);
+    document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
+    document.getElementById('imageUpload').addEventListener('change', sendImage);
+    console.log("Обработчики событий добавлены");
 });
 
 let lastMessageTime = 0;

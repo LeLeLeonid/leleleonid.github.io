@@ -12,31 +12,30 @@
         <h3>Регистрация:</h3>
         <input type="text" id="reg-username" placeholder="Введите ник | Enter Nickname">
         <input type="password" id="reg-password" placeholder="Введите пароль | Enter Password">
-        <button onclick="register()">Зарегистрироваться</button>
+        <button id="register-btn">Зарегистрироваться</button>
         <h3>Вход:</h3>
         <input type="text" id="username" placeholder="Введите ник | Enter Nickname">
         <input type="password" id="password" placeholder="Введите пароль | Enter Password">
-        <button id="login-btn" onclick="login()">Войти</button>
+        <button id="login-btn">Войти</button>
     </div>
     <div id="user-panel" style="display: none;">
         <p>Добро пожаловать, <span id="current-user"></span>!</p>
-        <button onclick="logout()">Выйти</button>
+        <button id="logout-btn">Выйти</button>
         <input type="color" id="color" value="#009900">
-        <button id="banButton" style="display: none;" onclick="banUserPrompt()">Забанить пользователя</button> <!-- Кнопка скрыта по умолчанию -->
+        <button id="banButton" style="display: none;">Забанить пользователя</button> <!-- Кнопка скрыта по умолчанию -->
     </div>
     <div id="chat-section" style="display: none;">
         <h3>Чат:</h3>
         <div id="chat-box"></div>
-        <input type="text" id="message" placeholder="Введите сообщение | Enter Message" 
-               onkeydown="if(event.key === 'Enter') sendMessage()">
-        <button id="send-btn" onclick="sendMessage()">Отправить</button>
-		<input type="file" id="imageUpload" accept="image/*">
-		<button onclick="sendImage()">Отправить изображение</button>
-        <button onclick="clearChat()">Очистить чат</button>
+        <input type="text" id="message" placeholder="Введите сообщение | Enter Message">
+        <button id="send-btn">Отправить</button>
+        <input type="file" id="imageUpload" accept="image/*">
+        <button id="imageUpload-btn">Отправить изображение</button>
+        <button id="clear-chat-btn">Очистить чат</button>
     </div>
-	<li><a href="../index.html">INDEX</a></li>
-	<script src="../scripts/chat.js" type="module" defer></script>
+    <li><a href="../index.html">INDEX</a></li>
+    <script src="../scripts/chat.js" type="module" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </body>
 </html>
