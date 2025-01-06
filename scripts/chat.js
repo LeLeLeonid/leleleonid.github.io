@@ -256,3 +256,11 @@ function logout() {
     chatSection.style.display = 'none';
     currentUserDisplay.textContent = '';
 }
+
+window.register = register;
+window.login = login;
+window.sendMessage = sendMessage;
+window.sendImage = sendImage;
+window.clearChat = clearChat;
+window.logout = logout;
+window.banUserPrompt = banUserPrompt;
