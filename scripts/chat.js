@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('ban-btn').addEventListener('click', banUserPrompt);
 	document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
 	document.getElementById('imageUpload').addEventListener('change', sendImage);
+	console.log("POSHOL NAHUI");
 });
 
 let lastMessageTime = 0;
