@@ -1,7 +1,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://ffwexpayporxtkmuqbic.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmd2V4cGF5cG9yeHRrbXVxYmljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYwMTc5NDMsImV4cCI6MjA1MTU5Mzk0M30.hfL3fDuwagm1-8GKof5LoUd6d6CoVA1oVEnByT-wWOI';
+const SUPABASE_KEY = 'YOUR_SUPABASE_KEY'; // Замените на ваш ключ
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Получаем элементы DOM
@@ -20,7 +20,24 @@ const imageUploadInput = document.getElementById('imageUpload');
 
 let lastMessageTime = 0;
 let currentUser = null;
+let currentUserId = null; // UUID пользователя
 
+// Восстановление сессии из localStorage при загрузке страницы
+const savedUser = localStorage.getItem('currentUser');
+const savedUserId = localStorage.getItem('currentUserId');
+
+if (savedUser && savedUserId) {
+    currentUser = savedUser;
+    currentUserId = savedUserId;
+    currentUserDisplay.textContent = currentUser;
+    authSection.style.display = 'none';
+    userPanel.style.display = 'block';
+    chatSection.style.display = 'block';
+    loadMessages();
+    setupRealtimeMessages();
+}
+
+// Регистрация пользователя
 async function register() {
     const regUsername = regUsernameInput.value.trim();
     const regPassword = regPasswordInput.value;
@@ -50,23 +67,24 @@ async function register() {
 
         if (error) {
             if (error.code === '23505') {
-                alert('Пользователь с таким именем уже существует. Выберите другой ник.');
+                alert('Пользователь с таким именем уже существует.');
             } else {
                 console.error('Ошибка регистрации:', error);
-                alert('Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.');
+                alert('Произошла ошибка при регистрации.');
             }
             return;
         }
 
-        alert('Регистрация прошла успешно! Теперь вы можете войти.');
+        alert('Регистрация прошла успешно!');
         regUsernameInput.value = '';
         regPasswordInput.value = '';
     } catch (error) {
         console.error('Ошибка регистрации:', error);
-        alert('Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.');
+        alert('Произошла ошибка при регистрации.');
     }
 }
 
+// Вход пользователя
 async function login() {
     const username = usernameInput.value.trim();
     const password = passwordInput.value.trim();
@@ -78,6 +96,7 @@ async function login() {
 
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
 
+    // Проверяем, не заблокирован ли пользователь
     const { data: bannedData } = await supabase
         .from('banned_users')
         .select('username')
@@ -88,6 +107,7 @@ async function login() {
         return;
     }
 
+    // Ищем пользователя в таблице users
     const { data: userData, error } = await supabase
         .from('users')
         .select('*')
@@ -99,177 +119,62 @@ async function login() {
         return;
     }
 
+    // Устанавливаем текущего пользователя и его UUID
     currentUser = username;
+    currentUserId = userData[0].id;
     currentUserDisplay.textContent = username;
     authSection.style.display = 'none';
     userPanel.style.display = 'block';
     chatSection.style.display = 'block';
+
+    // Сохраняем данные пользователя в localStorage
+    localStorage.setItem('currentUser', currentUser);
+    localStorage.setItem('currentUserId', currentUserId);
+
     loadMessages();
-	setupRealtimeMessages();
-}
-
-async function setupRealtimeMessages() {
-    supabase
-        .from('message')
-        .on('INSERT', payload => {
-            loadMessages();
-        })
-        .subscribe();
-}
-
-async function sendMessage() {
-    const message = document.getElementById('message').value.trim();
-    const currentTime = new Date().getTime();
-
-    if (!currentUser || !message) {
-        alert('Введите сообщение.');
-        return;
-    }
-
-    if (currentTime - lastMessageTime < 10000) {
-        alert('Пожалуйста, подождите 10 секунд перед отправкой следующего сообщения.');
-        return;
-    }
-
-    const isLink = message.startsWith('http://') || message.startsWith('https://');
-
-    const { data, error } = await supabase
-        .from('message')
-        .insert([{
-            username: currentUser,
-            message: isLink ? `<a href="${message}" target="_blank">${message}</a>` : message,
-            color: colorInput.value,
-            is_link: isLink
-        }]);
-
-    if (error) {
-        console.error('Ошибка отправки сообщения:', error);
-        return;
-    }
-
-    document.getElementById('message').value = '';
-    lastMessageTime = currentTime;
-    loadMessages();
-}
-
-
-async function sendImage() {
-    const file = imageUploadInput.files[0];
-    const currentTime = new Date().getTime();
-
-    if (!currentUser || !file) {
-        alert('Выберите изображение для отправки.');
-        return;
-    }
-
-    if (currentTime - lastMessageTime < 10000) {
-        alert('Пожалуйста, подождите 10 секунд перед отправкой следующего сообщения.');
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = async function (event) {
-        const imageSrc = event.target.result;
-
-        const { data, error } = await supabase
-            .from('message')
-            .insert([{
-                username: currentUser,
-                message: `<img src="${imageSrc}" style="max-width: 200px; max-height: 200px;">`,
-                color: colorInput.value,
-                is_link: false
-            }]);
-
-        if (error) {
-            console.error('Ошибка отправки изображения:', error);
-            return;
-        }
-
-        lastMessageTime = currentTime;
-        loadMessages();
-    };
-
-    reader.readAsDataURL(file);
-    imageUploadInput.value = '';
-}
-
-async function loadMessages() {
-    const { data: messages, error } = await supabase
-        .from('message')
-        .select('*')
-        .order('id', { ascending: true });
-
-    if (error) {
-        console.error('Ошибка загрузки сообщений:', error);
-        return;
-    }
-
-    chatBox.innerHTML = '';
-    messages.forEach(chatMessage => {
-        const messageContent = chatMessage.is_link
-            ? `<a href="${chatMessage.message}" target="_blank">${chatMessage.message}</a>`
-            : chatMessage.message;
-
-        chatBox.innerHTML += `
-            <p>
-                <strong style="color:${chatMessage.color || '#000'}">${chatMessage.username}:</strong> 
-                ${messageContent}
-            </p>`;
-    });
-}
-
-async function banUserPrompt() {
-    const usernameToBan = prompt('Введите имя пользователя для бана:');
-    if (usernameToBan) {
-        banUser(usernameToBan);
-    }
-}
-
-async function banUser(username) {
-    const { data, error } = await supabase
-        .from('banned_users')
-        .insert([{ username }]);
-
-    if (error) {
-        console.error('Ошибка бана пользователя:', error);
-        return;
-    }
-
-    await supabase
-        .from('message')
-        .delete()
-        .eq('username', username);
-
-    alert(`Пользователь ${username} был заблокирован и его сообщения удалены.`);
-    loadMessages();
-}
-
-async function clearChat() {
-    const { error } = await supabase
-        .from('message')
-        .delete();
-
-    if (error) {
-        console.error('Ошибка очистки чата:', error);
-        return;
-    }
-
-    alert('Чат был очищен!');
-    loadMessages();
+    setupRealtimeMessages();
 }
 
 function logout() {
     currentUser = null;
+    currentUserId = null;
+
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('currentUserId');
+
     authSection.style.display = 'block';
     userPanel.style.display = 'none';
     chatSection.style.display = 'none';
     currentUserDisplay.textContent = '';
 }
 
-window.register = register;
-window.login = login;
-window.sendMessage = sendMessage;
-window.sendImage = sendImage;
-window.clearChat = clearChat;
-window.logout = logout;
-window.banUserPrompt = banUserPrompt;
+function logout() {
+    currentUser = null;
+    currentUserId = null;
+    authSection.style.display = 'block';
+    userPanel.style.display = 'none';
+    chatSection.style.display = 'none';
+    currentUserDisplay.textContent = '';
+}
+
+async function banUserPrompt() {
+    const usernameToBan = prompt('Введите имя пользователя для бана:');
+    if (usernameToBan) {
+        await banUser(usernameToBan);
+    }
+}
+
+document.getElementById('login-btn').addEventListener('click', login);
+document.getElementById('register-btn').addEventListener('click', register);
+document.getElementById('send-btn').addEventListener('click', sendMessage);
+document.getElementById('logout-btn').addEventListener('click', logout);
+document.getElementById('ban-btn').addEventListener('click', banUserPrompt);
+document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
+document.getElementById('imageUpload').addEventListener('change', sendImage);
+
+
+if (currentUser) {
+    loadMessages();
+    setupRealtimeMessages();
+}
+
