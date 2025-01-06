@@ -164,7 +164,7 @@ async function sendMessage() {
     const { data, error } = await supabase
         .from('message')
         .insert([{
-            user_id: currentUserId,  // Используем UUID пользователя
+            id: currentUserId,  // Используем UUID пользователя
             username: currentUser,
             message: isLink ? `<a href="${message}" target="_blank">${message}</a>` : message,
             color: colorInput.value,
@@ -210,7 +210,7 @@ async function sendImage() {
     const { data: messageData, error: messageError } = await supabase
         .from('message')
         .insert([{
-            user_id: currentUserId,
+            id: currentUserId,
             username: currentUser,
             message: `<img src="${imageUrl}" style="max-width: 200px; max-height: 200px;">`,
             color: colorInput.value,
@@ -269,7 +269,7 @@ async function banUser(username) {
 
     const { error: banError } = await supabase
         .from('banned_users')
-        .insert([{ user_id: userId, username }]);
+        .insert([{ id: userId, username }]);
 
     if (banError) {
         console.error('Ошибка бана пользователя:', banError);
@@ -280,7 +280,7 @@ async function banUser(username) {
     await supabase
         .from('message')
         .delete()
-        .eq('user_id', userId);
+        .eq('id', userId);
 
     alert(`Пользователь ${username} был заблокирован, и его сообщения удалены.`);
     loadMessages();
