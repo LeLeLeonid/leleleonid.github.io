@@ -49,7 +49,6 @@ async function register() {
             .insert([{ username: regUsername, password_hash: hashedPassword }]);
 
         if (error) {
-            // Если ошибка связана с уникальностью имени пользователя
             if (error.code === '23505') {
                 alert('Пользователь с таким именем уже существует. Выберите другой ник.');
             } else {
@@ -68,10 +67,9 @@ async function register() {
     }
 }
 
-// Вход пользователя
 async function login() {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
+    const username = usernameInput.value;
+    const password = passwordInput.value;
 
     if (!username || !password) {
         alert('Пожалуйста, заполните все поля.');
@@ -109,7 +107,6 @@ async function login() {
     loadMessages();
 }
 
-// Отправка сообщения
 async function sendMessage() {
     const message = document.getElementById('message').value.trim();
     const currentTime = new Date().getTime();
@@ -145,7 +142,7 @@ async function sendMessage() {
     loadMessages();
 }
 
-// Отправка изображения
+
 async function sendImage() {
     const file = imageUploadInput.files[0];
     const currentTime = new Date().getTime();
@@ -186,7 +183,6 @@ async function sendImage() {
     imageUploadInput.value = '';
 }
 
-// Загрузка сообщений
 async function loadMessages() {
     const { data: messages, error } = await supabase
         .from('message')
@@ -212,7 +208,6 @@ async function loadMessages() {
     });
 }
 
-// Бан пользователя
 async function banUserPrompt() {
     const usernameToBan = prompt('Введите имя пользователя для бана:');
     if (usernameToBan) {
@@ -239,7 +234,6 @@ async function banUser(username) {
     loadMessages();
 }
 
-// Очистка чата
 async function clearChat() {
     const { error } = await supabase
         .from('message')
@@ -254,7 +248,6 @@ async function clearChat() {
     loadMessages();
 }
 
-// Выход пользователя
 function logout() {
     currentUser = null;
     authSection.style.display = 'block';
