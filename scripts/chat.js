@@ -21,7 +21,6 @@ const imageUploadInput = document.getElementById('imageUpload');
 let lastMessageTime = 0;
 let currentUser = null;
 
-// Регистрация пользователя
 async function register() {
     const regUsername = regUsernameInput.value.trim();
     const regPassword = regPasswordInput.value;
@@ -44,22 +43,29 @@ async function register() {
 
     const hashedPassword = CryptoJS.SHA256(regPassword).toString(CryptoJS.enc.Hex);
 
-    const { data, error } = await supabase
-        .from('users')
-        .insert([{ username: regUsername, password_hash: hashedPassword }]);
+    try {
+        const { data, error } = await supabase
+            .from('users')
+            .insert([{ username: regUsername, password_hash: hashedPassword }]);
 
-    if (error) {
-        if (error.code === '23505') {
-            alert('Пользователь с таким именем уже существует. Выберите другой ник.');
-        } else {
-            console.error('Ошибка регистрации:', error);
+        if (error) {
+            // Если ошибка связана с уникальностью имени пользователя
+            if (error.code === '23505') {
+                alert('Пользователь с таким именем уже существует. Выберите другой ник.');
+            } else {
+                console.error('Ошибка регистрации:', error);
+                alert('Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.');
+            }
+            return;
         }
-        return;
-    }
 
-    alert('Регистрация прошла успешно! Теперь вы можете войти.');
-    regUsernameInput.value = '';
-    regPasswordInput.value = '';
+        alert('Регистрация прошла успешно! Теперь вы можете войти.');
+        regUsernameInput.value = '';
+        regPasswordInput.value = '';
+    } catch (error) {
+        console.error('Ошибка регистрации:', error);
+        alert('Произошла ошибка при регистрации. Пожалуйста, попробуйте позже.');
+    }
 }
 
 // Вход пользователя
