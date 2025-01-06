@@ -139,8 +139,6 @@ async function setupRealtimeMessages() {
         .subscribe();
 }
 
-window.login = login;
-
 async function sendMessage() {
     const message = document.getElementById('message').value.trim();
     const currentTime = new Date().getTime();
@@ -316,7 +314,9 @@ async function banUserPrompt() {
     }
 }
 
-document.getElementById('login-btn').addEventListener('click', login);
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('login-btn').addEventListener('click', login);
+});
 document.getElementById('register-btn').addEventListener('click', register);
 document.getElementById('send-btn').addEventListener('click', sendMessage);
 document.getElementById('logout-btn').addEventListener('click', logout);
