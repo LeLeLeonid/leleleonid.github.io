@@ -1,7 +1,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
 const SUPABASE_URL = 'https://ffwexpayporxtkmuqbic.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmd2V4cGF5cG9yeHRrbXVxYmljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYwMTc5NDMsImV4cCI6MjA1MTU5Mzk0M30.hfL3fDuwagm1-8GKof5LoUd6d6CoVA1oVEnByT-wWOI';';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmd2V4cGF5cG9yeHRrbXVxYmljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzYwMTc5NDMsImV4cCI6MjA1MTU5Mzk0M30.hfL3fDuwagm1-8GKof5LoUd6d6CoVA1oVEnByT-wWOI';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Получаем элементы DOM
