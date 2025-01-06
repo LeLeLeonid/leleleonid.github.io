@@ -68,8 +68,8 @@ async function register() {
 }
 
 async function login() {
-    const username = usernameInput.value;
-    const password = passwordInput.value;
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
 
     if (!username || !password) {
         alert('Пожалуйста, заполните все поля.');
@@ -105,6 +105,16 @@ async function login() {
     userPanel.style.display = 'block';
     chatSection.style.display = 'block';
     loadMessages();
+	setupRealtimeMessages();
+}
+
+async function setupRealtimeMessages() {
+    supabase
+        .from('message')
+        .on('INSERT', payload => {
+            loadMessages();
+        })
+        .subscribe();
 }
 
 async function sendMessage() {
