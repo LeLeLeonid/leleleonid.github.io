@@ -325,3 +325,8 @@ if (currentUser) {
     setupRealtimeMessages();
 }
 
+window.login = login;
+window.sendMessage = sendMessage;
+window.clearChat = clearChat;
+window.sendImage = sendImage;
+window.logout = logout;

@@ -29,7 +29,7 @@
         <div id="chat-box"></div>
         <input type="text" id="message" placeholder="Введите сообщение | Enter Message" 
                onkeydown="if(event.key === 'Enter') sendMessage()">
-        <button id="send-btn">Отправить</button>
+        <button id="send-btn" onclick="sendMessage()">Отправить</button>
 		<input type="file" id="imageUpload" accept="image/*">
 		<button onclick="sendImage()">Отправить изображение</button>
         <button onclick="clearChat()">Очистить чат</button>
