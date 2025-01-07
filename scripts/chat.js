@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('logout-btn').addEventListener('click', logout);
     document.getElementById('send-btn').addEventListener('click', sendMessage);
     document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
-    document.getElementById('imageUpload').addEventListener('change', sendImage);
+    document.getElementById('imageUpload-btn').addEventListener('change', sendImage);
 	
 	const messageInput = document.getElementById('message');
     messageInput.addEventListener('keydown', function(event) {
@@ -134,10 +134,15 @@ async function login() {
 
     currentUser = username;
     currentUserId = userData[0].id;
+    const userRole = userData[0].role;
     currentUserDisplay.textContent = username;
     authSection.style.display = 'none';
     userPanel.style.display = 'block';
     chatSection.style.display = 'block';
+
+    if (userRole === 'admin') {
+        document.getElementById('banButton').style.display = 'inline-block';
+    }
 
     localStorage.setItem('currentUser', currentUser);
     localStorage.setItem('currentUserId', currentUserId);
@@ -253,14 +258,44 @@ async function loadMessages() {
             ? `<a href="${chatMessage.message}" target="_blank">${chatMessage.message}</a>`
             : chatMessage.message;
 
+        const editButton = (currentUser === chatMessage.username || userRole === 'admin')
+            ? `<button onclick="editMessage(${chatMessage.id})">Редактировать</button>`
+            : '';
+
         chatBox.innerHTML += `
             <p>
                 <strong style="color:${chatMessage.color || '#000'}">${chatMessage.username}:</strong> 
                 ${messageContent}
+                ${editButton}
             </p>`;
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+document.getElementById('banButton').addEventListener('click', async () => {
+    const usernameToBan = prompt('Введите имя пользователя для бана:');
+    if (usernameToBan) {
+        await banUser(usernameToBan);
+    }
+});
+
+async function editMessage(messageId) {
+    const newMessage = prompt('Введите новое сообщение:');
+    if (newMessage) {
+        const { error } = await supabase
+            .from('message')
+            .update({ message: newMessage })
+            .eq('id', messageId);
+
+        if (error) {
+            console.error('Ошибка редактирования сообщения:', error);
+            return;
+        }
+
+        alert('Сообщение успешно отредактировано!');
+        loadMessages();
+    }
 }
 
 async function banUser(username) {
@@ -285,7 +320,6 @@ async function banUser(username) {
         return;
     }
 
-    // Удаляем все сообщения забаненного пользователя
     await supabase
         .from('message')
         .delete()
@@ -296,16 +330,26 @@ async function banUser(username) {
 }
 
 async function clearChat() {
-    const { error } = await supabase
-        .from('message')
-        .delete();
+    const { data: userData, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', currentUserId);
 
-    if (error) {
-        console.error('Ошибка очистки чата:', error);
+    if (error || userData.length === 0 || userData[0].role !== 'admin') {
+        alert('У вас нет прав для очистки чата.');
         return;
     }
 
-    alert('Чат был очищен!');
+    const { error: clearError } = await supabase
+        .from('message')
+        .delete();
+
+    if (clearError) {
+        console.error('Ошибка очистки чата:', clearError);
+        return;
+    }
+
+    alert('Чат был успешно очищен!');
     loadMessages();
 }
 
