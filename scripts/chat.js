@@ -164,7 +164,6 @@ async function sendMessage() {
     const { data, error } = await supabase
         .from('message')
         .insert([{
-            id: currentUserId,  // Используем UUID пользователя
             username: currentUser,
             message: isLink ? `<a href="${message}" target="_blank">${message}</a>` : message,
             color: colorInput.value,
