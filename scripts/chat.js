@@ -134,13 +134,13 @@ async function login() {
 
     currentUser = username;
     currentUserId = userData[0].id;
-    const userRole = userData[0].role;
+    const role = userData[0].role;
     currentUserDisplay.textContent = username;
     authSection.style.display = 'none';
     userPanel.style.display = 'block';
     chatSection.style.display = 'block';
 
-    if (userRole === 'admin') {
+    if (role === 'admin') {
         document.getElementById('banButton').style.display = 'inline-block';
     }
 
