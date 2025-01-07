@@ -382,4 +382,5 @@ window.login = login;
 window.sendMessage = sendMessage;
 window.clearChat = clearChat;
 window.sendImage = sendImage;
+window.role = role;
 window.logout = logout;
