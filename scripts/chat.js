@@ -160,11 +160,12 @@ async function sendMessage() {
     }
 
     const isLink = message.startsWith('http://') || message.startsWith('https://');
-
+	
     const { data, error } = await supabase
         .from('message')
         .insert([{
             username: currentUser,
+            id: currentUserId,
             message: isLink ? `<a href="${message}" target="_blank">${message}</a>` : message,
             color: colorInput.value,
             is_link: isLink
