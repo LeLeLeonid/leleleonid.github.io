@@ -24,7 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('send-btn').addEventListener('click', sendMessage);
     document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
     document.getElementById('imageUpload').addEventListener('change', sendImage);
+	
+	const messageInput = document.getElementById('message');
+    messageInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
+    });
+
     console.log("Обработчики событий добавлены");
+});
 });
 
 let lastMessageTime = 0;
