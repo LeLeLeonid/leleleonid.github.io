@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log("Обработчики событий добавлены");
 });
-});
 
 let lastMessageTime = 0;
 let currentUser = null;
