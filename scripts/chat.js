@@ -258,7 +258,7 @@ async function loadMessages() {
             ? `<a href="${chatMessage.message}" target="_blank">${chatMessage.message}</a>`
             : chatMessage.message;
 
-        const editButton = (currentUser === chatMessage.username || userRole === 'admin')
+        const editButton = (currentUser === chatMessage.username || role === 'admin')
             ? `<button onclick="editMessage(${chatMessage.id})">Редактировать</button>`
             : '';
 
