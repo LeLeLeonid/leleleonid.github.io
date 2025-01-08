@@ -218,36 +218,48 @@ async function sendImage() {
         return;
     }
 
-    const fileName = `${currentUser}_${Date.now()}_${file.name}`;
-    const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('chat-images')
-        .upload(fileName, file);
+    const fileName = `${currentUser}_${Date.now()}_${file.name}`; // Уникальное имя файла
 
-    if (uploadError) {
-        console.error('Ошибка загрузки изображения:', uploadError);
-        return;
+    try {
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('chat-images')
+            .upload(fileName, file);
+
+        if (uploadError) {
+            console.error('Ошибка загрузки изображения:', uploadError);
+            alert('Произошла ошибка при загрузке изображения.');
+            return;
+        }
+
+        const { data: publicUrlData } = supabase.storage
+            .from('chat-images')
+            .getPublicUrl(fileName);
+
+        const imageUrl = publicUrlData.publicUrl;
+
+        const { data: messageData, error: messageError } = await supabase
+            .from('message')
+            .insert([{
+                id: currentUserId,
+                username: currentUser,
+                message: `<img src="${imageUrl}" style="max-width: 200px; max-height: 200px;">`,
+                color: colorInput.value,
+                is_link: false
+            }]);
+
+        if (messageError) {
+            console.error('Ошибка отправки изображения:', messageError);
+            alert('Произошла ошибка при отправке сообщения с изображением.');
+            return;
+        }
+
+        lastMessageTime = currentTime;
+        loadMessages();
+        imageUploadInput.value = '';
+    } catch (error) {
+        console.error('Ошибка отправки изображения:', error);
+        alert('Произошла ошибка при отправке изображения.');
     }
-
-    const imageUrl = supabase.storage.from('chat-images').getPublicUrl(fileName).publicURL;
-
-    const { data: messageData, error: messageError } = await supabase
-        .from('message')
-        .insert([{
-            id: currentUserId,
-            username: currentUser,
-            message: `<img src="${imageUrl}" style="max-width: 200px; max-height: 200px;">`,
-            color: colorInput.value,
-            is_link: false
-        }]);
-
-    if (messageError) {
-        console.error('Ошибка отправки изображения:', messageError);
-        return;
-    }
-
-    lastMessageTime = currentTime;
-    loadMessages();
-    imageUploadInput.value = '';
 }
 
 async function loadMessages() {
