@@ -39,6 +39,12 @@ document.addEventListener('DOMContentLoaded', () => {
 let lastMessageTime = 0;
 let currentUser = null;
 let currentUserId = null;
+let role = null;
+
+const savedRole = localStorage.getItem('role');
+if (savedRole) {
+    role = savedRole;
+}
 
 const savedUser = localStorage.getItem('currentUser');
 const savedUserId = localStorage.getItem('currentUserId');
@@ -134,7 +140,8 @@ async function login() {
 
     currentUser = username;
     currentUserId = userData[0].id;
-    const role = userData[0].role;
+    role = userData[0].role;
+
     currentUserDisplay.textContent = username;
     authSection.style.display = 'none';
     userPanel.style.display = 'block';
@@ -142,10 +149,12 @@ async function login() {
 
     if (role === 'admin') {
         document.getElementById('banButton').style.display = 'inline-block';
+		document.getElementById('clear-chat-btn').style.display = 'inline-block';
     }
 
     localStorage.setItem('currentUser', currentUser);
     localStorage.setItem('currentUserId', currentUserId);
+    localStorage.setItem('role', role);
 
     loadMessages();
     setupRealtimeMessages();
@@ -298,11 +307,16 @@ async function editMessage(messageId) {
     }
 }
 
-async function banUser(username) {
+async function banUser(usernameToBan) {
+    if (role !== 'admin') {
+        alert('У вас нет прав для выполнения этого действия.');
+        return;
+    }
+
     const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
-        .eq('username', username);
+        .eq('username', usernameToBan);
 
     if (userError || userData.length === 0) {
         alert('Пользователь не найден.');
@@ -311,32 +325,29 @@ async function banUser(username) {
 
     const userId = userData[0].id;
 
+    // Добавляем пользователя в таблицу banned_users
     const { error: banError } = await supabase
         .from('banned_users')
-        .insert([{ id: userId, username }]);
+        .insert([{ id: userId, username: usernameToBan }]);
 
     if (banError) {
         console.error('Ошибка бана пользователя:', banError);
         return;
     }
 
+    // Удаляем сообщения забаненного пользователя
     await supabase
         .from('message')
         .delete()
         .eq('id', userId);
 
-    alert(`Пользователь ${username} был заблокирован, и его сообщения удалены.`);
+    alert(`Пользователь ${usernameToBan} был заблокирован, и его сообщения удалены.`);
     loadMessages();
 }
 
 async function clearChat() {
-    const { data: userData, error } = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', currentUserId);
-
-    if (error || userData.length === 0 || userData[0].role !== 'admin') {
-        alert('У вас нет прав для очистки чата.');
+    if (role !== 'admin') {
+        alert('У вас нет прав для выполнения этого действия.');
         return;
     }
 
