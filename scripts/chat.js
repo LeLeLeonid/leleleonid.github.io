@@ -188,7 +188,7 @@ async function sendMessage() {
         .from('message')
         .insert([{
             username: currentUser,
-            id: currentUserId,
+            message_id_key: currentUserId,
             message: isLink ? `<a href="${message}" target="_blank">${message}</a>` : message,
             color: colorInput.value,
             is_link: isLink
@@ -239,7 +239,7 @@ async function sendImage() {
         const { data: messageData, error: messageError } = await supabase
             .from('message')
             .insert([{
-                id: currentUserId,
+                message_id_key: currentUserId,
                 username: currentUser,
                 message: `<img src="${imageUrl}" style="max-width: 200px; max-height: 200px;">`,
                 color: colorInput.value,
@@ -279,7 +279,7 @@ async function loadMessages() {
             : chatMessage.message;
 
         const editButton = (currentUser === chatMessage.username || role === 'admin')
-            ? `<button onclick="editMessage(${chatMessage.id})">Редактировать</button>`
+            ? `<button onclick="editMessage(${chatMessage.message_id_key})">Редактировать</button>`
             : '';
 
         chatBox.innerHTML += `
