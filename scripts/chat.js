@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('logout-btn').addEventListener('click', logout);
     document.getElementById('send-btn').addEventListener('click', sendMessage);
     document.getElementById('clear-chat-btn').addEventListener('click', clearChat);
-    document.getElementById('imageUpload-btn').addEventListener('change', sendImage);
+    document.getElementById('imageUpload-btn').addEventListener('click', sendImage);
 	
 	const messageInput = document.getElementById('message');
     messageInput.addEventListener('keydown', function(event) {
@@ -205,7 +205,8 @@ async function sendMessage() {
 }
 
 async function sendImage() {
-    const file = imageUploadInput.files[0];
+	const file = document.getElementById('imageUploadInput').files[0];
+    console.log('Файл для загрузки:', file);
     const currentTime = new Date().getTime();
 
     if (!currentUser || !file) {
