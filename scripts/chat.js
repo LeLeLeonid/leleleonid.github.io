@@ -206,7 +206,6 @@ async function sendMessage() {
 
 async function sendImage() {
 	const file = document.getElementById('imageUploadInput').files[0];
-    console.log('Файл для загрузки:', file);
     const currentTime = new Date().getTime();
 
     if (!currentUser || !file) {
@@ -228,17 +227,14 @@ async function sendImage() {
 
         if (uploadError) {
             console.error('Ошибка загрузки изображения:', uploadError);
-            alert('Произошла ошибка при загрузке изображения.');
             return;
         }
-		console.log('Данные после загрузки:', uploadData);
 
         const { data: publicUrlData } = supabase.storage
             .from('chat-images')
             .getPublicUrl(fileName);
 
         const imageUrl = publicUrlData.publicUrl;
-		console.log('Публичный URL:', publicUrlData.publicUrl);
 
         const { data: messageData, error: messageError } = await supabase
             .from('message')
