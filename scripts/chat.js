@@ -238,14 +238,6 @@ async function sendImage() {
             .getPublicUrl(fileName);
 
         const imageUrl = publicUrlData.publicUrl;
-		const { data: publicUrlData, error: publicUrlError } = supabase.storage
-			.from('chat-images')
-			.getPublicUrl(fileName);
-		if (publicUrlError) {
-			console.error('Ошибка получения публичного URL:', publicUrlError);
-			alert('Не удалось получить публичную ссылку на изображение.');
-			return;
-		}
 		console.log('Публичный URL:', publicUrlData.publicUrl);
 
         const { data: messageData, error: messageError } = await supabase
