@@ -281,12 +281,12 @@ async function loadMessages() {
         //    ? `<button onclick="editMessage(${chatMessage.message_id_key})">Редактировать</button>`
         //    : '';
 		//
-        chatBox.innerHTML += `
-            <p>
-                <strong style="color:${chatMessage.color || '#000'}">${chatMessage.username}:</strong> 
-                ${messageContent}
-                ${editButton}
-            </p>`;
+        //chatBox.innerHTML += `
+        //   <p>
+        //        <strong style="color:${chatMessage.color || '#000'}">${chatMessage.username}:</strong> 
+        //       ${messageContent}
+        //        ${editButton}
+        //   </p>`;
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
