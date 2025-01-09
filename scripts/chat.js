@@ -276,11 +276,11 @@ async function loadMessages() {
         const messageContent = chatMessage.is_link
             ? `<a href="${chatMessage.message}" target="_blank">${chatMessage.message}</a>`
             : chatMessage.message;
-
-        const editButton = (currentUser === chatMessage.username || role === 'admin')
-            ? `<button onclick="editMessage(${chatMessage.message_id_key})">Редактировать</button>`
-            : '';
-
+		//
+        //const editButton = (currentUser === chatMessage.username || role === 'admin')
+        //    ? `<button onclick="editMessage(${chatMessage.message_id_key})">Редактировать</button>`
+        //    : '';
+		//
         chatBox.innerHTML += `
             <p>
                 <strong style="color:${chatMessage.color || '#000'}">${chatMessage.username}:</strong> 
