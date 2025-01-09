@@ -40,6 +40,14 @@ let lastMessageTime = 0;
 let currentUser = null;
 let currentUserId = null;
 let role = null;
+let inputData = "ee50f2ac-9138-4bab-96d8-6c5d0214bac3";
+let integerData = parseInt(inputData, 10); // Преобразование строки в целое число
+if (!isNaN(integerData)) {
+    // Отправка данных на сервер
+} else {
+    console.error("Неверный синтаксис ввода для типа integer");
+}
+
 
 const savedRole = localStorage.getItem('role');
 if (savedRole) {
