@@ -248,7 +248,6 @@ async function sendImage() {
 
         if (messageError) {
             console.error('Ошибка отправки изображения:', messageError);
-            alert('Произошла ошибка при отправке сообщения с изображением.');
             return;
         }
 
