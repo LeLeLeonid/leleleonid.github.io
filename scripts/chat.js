@@ -215,7 +215,13 @@ async function sendMessage() {
 }
 
 async function sendImage() {
-    const file = imageUploadInput.files[0];
+    const imageInput = document.getElementById('imageUploadInput');
+    if (!imageInput || !imageInput.files || imageInput.files.length === 0) {
+        alert('Выберите изображение для отправки.');
+        return;
+    }
+
+    const file = imageInput.files[0];
     const currentTime = new Date().getTime();
 
     if (!currentUser || !file) {
@@ -228,7 +234,7 @@ async function sendImage() {
         return;
     }
 
-    const fileName = `${currentUser}_${Date.now()}_${file.name}`;
+    const fileName = `${currentUser}_${Date.now()}_${file.name}`; // Уникальное имя файла
 
     try {
         const { data: uploadData, error: uploadError } = await supabase.storage
@@ -256,7 +262,7 @@ async function sendImage() {
 
         lastMessageTime = currentTime;
         loadMessages();
-        imageUploadInput.value = '';
+        imageInput.value = '';
     } catch (error) {
         console.error('Ошибка отправки изображения:', error);
         alert('Произошла ошибка при отправке изображения.');
