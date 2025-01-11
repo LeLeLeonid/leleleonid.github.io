@@ -174,7 +174,7 @@ async function login() {
 async function setupRealtimeMessages() {
     const channel = supabase.channel('public:message')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'message' }, payload => {
-			console.log('Новое сообщение:', payload.new);
+			console.log(chatBox);
             loadMessages();
         })
         .subscribe();
@@ -275,22 +275,22 @@ async function loadMessages() {
         return;
     }
 
-    console.log('Сообщения, полученные из базы:', messages);
+    console.log('Сообщения, полученные из базы:', messages); // Отладка
+
+    chatBox.innerHTML = ''; // Очистка чата перед добавлением новых сообщений
+
     messages.forEach(chatMessage => {
         const messageContent = chatMessage.is_link
             ? `<a href="${chatMessage.message}" target="_blank">${chatMessage.message}</a>`
             : chatMessage.message;
-		//
-        //const editButton = (currentUser === chatMessage.username || role === 'admin')
-        //    ? `<button onclick="editMessage(${chatMessage.message_id_key})">Редактировать</button>`
-        //    : '';
-		//
-        //chatBox.innerHTML += `
-        //   <p>
-        //        <strong style="color:${chatMessage.color || '#000'}">${chatMessage.username}:</strong> 
-        //       ${messageContent}
-        //        ${editButton}
-        //   </p>`;
+			
+        const messageHTML = `
+            <p>
+                <strong style="color:${chatMessage.color || '#000'}">${chatMessage.username}:</strong>
+                ${messageContent}
+            </p>`;
+        
+        chatBox.innerHTML += messageHTML;
     });
 
     chatBox.scrollTop = chatBox.scrollHeight;
