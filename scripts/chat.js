@@ -117,47 +117,59 @@ async function login() {
 
     const hashedPassword = CryptoJS.SHA256(password).toString(CryptoJS.enc.Hex);
 
-    const { data: bannedData } = await supabase
-        .from('banned_users')
-        .select('username')
-        .eq('username', username);
+    document.getElementById('login-btn').disabled = true;
+    document.getElementById('login-btn').textContent = 'Вход...';
 
-    if (bannedData.length > 0) {
-        alert('Вы заблокированы и не можете войти в чат.');
-        return;
+    try {
+        const { data: bannedData } = await supabase
+            .from('banned_users')
+            .select('username')
+            .eq('username', username);
+
+        if (bannedData.length > 0) {
+            alert('Вы заблокированы и не можете войти в чат.');
+            return;
+        }
+
+        const { data: userData, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('username', username)
+            .eq('password_hash', hashedPassword);
+
+        if (error || userData.length === 0) {
+            alert('Неправильный ник или пароль.');
+            return;
+        }
+
+        currentUser = username;
+        currentUserId = userData[0].id;
+        role = userData[0].role;
+
+        currentUserDisplay.textContent = username;
+        authSection.style.display = 'none';
+        userPanel.style.display = 'block';
+        chatSection.style.display = 'block';
+
+        if (role === 'admin') {
+            document.getElementById('banButton').style.display = 'inline-block';
+            document.getElementById('clear-chat-btn').style.display = 'inline-block';
+        }
+
+        localStorage.setItem('currentUser', currentUser);
+        localStorage.setItem('currentUserId', currentUserId);
+        localStorage.setItem('role', role);
+
+        loadMessages();
+        setupRealtimeMessages();
+    } catch (error) {
+        console.error('Ошибка входа:', error);
+        alert('Произошла ошибка при входе.');
+    } finally {
+        document.getElementById('login-btn').disabled = false;
+        document.getElementById('login-btn').textContent = 'Войти';
     }
-
-    const { data: userData, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('username', username)
-        .eq('password_hash', hashedPassword);
-
-    if (error || userData.length === 0) {
-        alert('Неправильный ник или пароль.');
-        return;
-    }
-
-    currentUser = username;
-    currentUserId = userData[0].id;
-    role = userData[0].role;
-
-    currentUserDisplay.textContent = username;
-    authSection.style.display = 'none';
-    userPanel.style.display = 'block';
-    chatSection.style.display = 'block';
-
-    if (role === 'admin') {
-        document.getElementById('banButton').style.display = 'inline-block';
-		document.getElementById('clear-chat-btn').style.display = 'inline-block';
-    }
-
-    localStorage.setItem('currentUser', currentUser);
-    localStorage.setItem('currentUserId', currentUserId);
-    localStorage.setItem('role', role);
-
-    loadMessages();
-    setupRealtimeMessages();
+}
 }
 
 async function setupRealtimeMessages() {
@@ -204,7 +216,7 @@ async function sendMessage() {
 }
 
 async function sendImage() {
-	const file = document.getElementById('imageUploadInput').files[0];
+    const file = imageUploadInput.files[0];
     const currentTime = new Date().getTime();
 
     if (!currentUser || !file) {
@@ -217,37 +229,31 @@ async function sendImage() {
         return;
     }
 
-    const fileName = `${currentUser}_${Date.now()}_${file.name}`; // Уникальное имя файла
+    const fileName = `${currentUser}_${Date.now()}_${file.name}`;
 
     try {
         const { data: uploadData, error: uploadError } = await supabase.storage
             .from('chat-images')
             .upload(fileName, file);
 
-        if (uploadError) {
-            console.error('Ошибка загрузки изображения:', uploadError);
-            return;
-        }
+        if (uploadError) throw uploadError;
 
-        const { data: publicUrlData } = supabase.storage
+        const { data: publicUrlData, error: urlError } = supabase.storage
             .from('chat-images')
             .getPublicUrl(fileName);
 
-        const imageUrl = publicUrlData.publicUrl;
+        if (urlError) throw urlError;
 
         const { data: messageData, error: messageError } = await supabase
             .from('message')
             .insert([{
                 username: currentUser,
-                message: `<img src="${imageUrl}" style="max-width: 200px; max-height: 200px;">`,
+                message: `<img src="${publicUrlData.publicUrl}" style="max-width: 200px; max-height: 200px;">`,
                 color: colorInput.value,
                 is_link: false
             }]);
 
-        if (messageError) {
-            console.error('Ошибка отправки изображения:', messageError);
-            return;
-        }
+        if (messageError) throw messageError;
 
         lastMessageTime = currentTime;
         loadMessages();
@@ -333,7 +339,6 @@ async function banUser(usernameToBan) {
 
     const userId = userData[0].id;
 
-    // Добавляем пользователя в таблицу banned_users
     const { error: banError } = await supabase
         .from('banned_users')
         .insert([{ id: userId, username: usernameToBan }]);
@@ -343,11 +348,10 @@ async function banUser(usernameToBan) {
         return;
     }
 
-    // Удаляем сообщения забаненного пользователя
     await supabase
         .from('message')
         .delete()
-        .eq('id', userId);
+        .eq('username', usernameToBan);
 
     alert(`Пользователь ${usernameToBan} был заблокирован, и его сообщения удалены.`);
     loadMessages();
@@ -356,6 +360,10 @@ async function banUser(usernameToBan) {
 async function clearChat() {
     if (role !== 'admin') {
         alert('У вас нет прав для выполнения этого действия.');
+        return;
+    }
+
+    if (!confirm('Вы уверены, что хотите очистить весь чат?')) {
         return;
     }
 
