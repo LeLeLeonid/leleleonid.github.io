@@ -174,7 +174,6 @@ async function login() {
 async function setupRealtimeMessages() {
     const channel = supabase.channel('public:message')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'message' }, payload => {
-			console.log(chatBox);
             loadMessages();
         })
         .subscribe();
@@ -274,8 +273,6 @@ async function loadMessages() {
         console.error('Ошибка загрузки сообщений:', error);
         return;
     }
-
-    console.log('Сообщения, полученные из базы:', messages); // Отладка
 
     chatBox.innerHTML = ''; // Очистка чата перед добавлением новых сообщений
 
