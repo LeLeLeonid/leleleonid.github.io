@@ -170,7 +170,6 @@ async function login() {
         document.getElementById('login-btn').textContent = 'Войти';
     }
 }
-}
 
 async function setupRealtimeMessages() {
     const channel = supabase.channel('public:message')
