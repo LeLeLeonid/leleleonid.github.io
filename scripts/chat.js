@@ -174,6 +174,7 @@ async function login() {
 async function setupRealtimeMessages() {
     const channel = supabase.channel('public:message')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'message' }, payload => {
+			console.log('Новое сообщение:', payload.new);
             loadMessages();
         })
         .subscribe();
@@ -274,7 +275,7 @@ async function loadMessages() {
         return;
     }
 
-    chatBox.innerHTML = '';
+    console.log('Сообщения, полученные из базы:', messages);
     messages.forEach(chatMessage => {
         const messageContent = chatMessage.is_link
             ? `<a href="${chatMessage.message}" target="_blank">${chatMessage.message}</a>`
