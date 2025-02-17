@@ -5,6 +5,7 @@ body {
     margin: 0;
     padding: 0;
     text-align: center;
+    overflow-x: hidden;
     overflow-y: auto;
     transform: scale(1);
     transform-origin: top сenter;
@@ -83,21 +84,24 @@ button:hover {
 
 @keyframes snowfall {
     0% { transform: translateY(-10vh) translateX(-10px); }
-    100% { transform: translateY(100vh) translateX(10px); }
+    100% { transform: translateY(185vh) translateX(10px); }
 }
 
 .snowflake {
-    position: fixed;
-    top: -10px;
-    width: 10px;
-    height: 10px;
+    position: absolute;
+    top: 0px;
+    width: 8px;
+    height: 8px;
     background: white;
     border-radius: 50%;
     filter: blur(1px);
     opacity: 0.8;
     animation: snowfall linear infinite;
     pointer-events: none;
+    overflow: hidden;
+    animation-delay: calc(-10s);
 }
+
 
 .neon-text {
     font-size: 1.2em;
@@ -123,4 +127,67 @@ input {
 .dark-theme {
     background-color: #121212;
     color: #ffffff;
+}
+
+@keyframes rainbow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes scrollText {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
+@keyframes randomSymbols {
+    0% { content: "Does it matter?"; }
+    25% { content: "Why exist?"; }
+    50% { content: "Is time real??"; }
+    75% { content: "What’s the point?"; }
+    100% { content: "Why care?"; }
+}
+
+.marquee {
+    position: fixed;
+    bottom: 10px;
+    width: 50%;
+    overflow: hidden;
+    overflow-x: hidden;
+    white-space: nowrap;
+    background-color: #000080;
+    padding: 10px 0;
+}
+
+.marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scrollText 5s linear infinite;
+}
+
+.rainbow-text {
+    display: inline-block;
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(90deg, red, orange, yellow, green, cyan, blue, violet, red);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: rainbow 4s linear infinite;
+}
+
+.rainbow-text::before,
+.rainbow-text::after {
+    animation: randomSymbols 2s infinite steps(1);
+}
+
+.rainbow-text::before {
+    content: "@#$%^&*()_-+=";
+    margin-right: 10px;
+}
+
+.rainbow-text::after {
+    content: "@#$%^&*()_-+=";
+    margin-left: 10px;
 }
