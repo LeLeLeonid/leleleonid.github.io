@@ -19,6 +19,8 @@
         <ul>
            <p color="red"><b>BEST GAME OF 2024:</b></p>
            <iframe frameborder="0" src="https://itch.io/embed/2650726?linkback=true&amp;bg_color=eeeccc&amp;border_color=eeeccc" width="552" height="167"><a href="https://leleleonid.itch.io/adventuresofmajara">Adventures Of Majara by Leonidas Zervas</a></iframe>
+		  <p color="red"><b>My Bestest Repo's:</b></p>
+		  <iframe src="htmls/repo.html" width="300" height="250" frameborder="0" scrolling="no"></iframe>
 		  
           <p color="red"><b>Games/Other</b></p>
 		  <li><a href="htmls/snake.html">LeLeSnake</a></li>
@@ -48,9 +50,21 @@ Web-страницы.</a></li>
     </header>
     <main>
       <article>
-        <section>
-          <h2><b>FREE CHAT / СВОБОДНЫЙ ЧАТ (alpha)</b></h2>
-		  <a href="htmls/chat.html" style="font-size: 24px; padding: 10px;">Перейти в чат</a>
+		<!-- Минималистичная секция генератора изображений (без встроенных стилей) -->
+		<div class="pollinations-generator" style="text-align:center; max-width:320px; margin: 0 auto;">
+		  <h2 class="pg-title">Бесплатный генератор фоток</h2>
+		  <form id="pollinationsForm" onsubmit="generateImage(event)" style="margin-top: 10px;">
+			<input id="promptInput" name="prompt" type="text" placeholder="Опишите желаемое изображение..." required autocomplete="off" />
+			<br /><br />
+			<input id="widthInput" name="width" type="number" min="16" max="2048" placeholder="Ширина (px)" value="512" required style="width: 48%; margin-right: 4%;" />
+			<input id="heightInput" name="height" type="number" min="16" max="2048" placeholder="Высота (px)" value="512" required style="width: 48%;" />
+			<br /><br />
+			<button type="submit">Создать</button>
+		  </form>
+
+		  <div id="pollinationsImage" style="margin-top: 15px;"></div>
+		</div>
+
           <img align="right" src="res/right_.gif">
           <p>ABOUT ME</p>
           <p>I am the supreme commander of the Ebalandian Republic. Noteprogressivist, engineer, futurist, majarist, etc.</p>
@@ -95,5 +109,33 @@ Web-страницы.</a></li>
 	  <li><a style:"font-size:30px" href="LICENSE.txt" target="_blank">MIT License</a></li>
       <h3 align=right><b>&copy Leonidas Zervas</h3></b>
     </footer>
+	<script>
+	function generateImage(e) {
+	  e.preventDefault();
+
+	  const promptInput = document.getElementById('promptInput');
+	  const widthInput = document.getElementById('widthInput');
+	  const heightInput = document.getElementById('heightInput');
+	  const imgBlock = document.getElementById('pollinationsImage');
+
+	  const userPrompt = promptInput.value.trim();
+	  if (!userPrompt) return;
+
+	  let width = parseInt(widthInput.value, 10);
+	  let height = parseInt(heightInput.value, 10);
+
+	  // Проверка и ограничение размеров по документации Pollinations
+	  width = (isNaN(width) || width < 16) ? 512 : (width > 2048 ? 2048 : width);
+	  height = (isNaN(height) || height < 16) ? 512 : (height > 2048 ? 2048 : height);
+
+	  const finalPrompt = encodeURIComponent(userPrompt);
+	  const imgUrl = `https://pollinations.ai/prompt/${finalPrompt}?nologo=true&width=${width}&height=${height}&seed=0&enhance=true`;
+
+	  // Вставка изображения со ссылкой
+	  imgBlock.innerHTML = `<a href="${imgUrl}" target="_blank" rel="noopener noreferrer" title="Открыть изображение в новой вкладке">
+		<img src="${imgUrl}" alt="Результат Pollinations" style="max-width:100%; max-height:150px; cursor:pointer; border-radius:5px; border:1px solid #ddd;">
+	  </a>`;
+	}
+	</script>
   </body>
 </html>
